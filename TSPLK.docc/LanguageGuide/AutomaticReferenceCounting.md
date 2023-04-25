@@ -412,7 +412,7 @@ class City {
 
 `City` 에 대한 초기화 구문은 `Country` 에 대한 초기화 구문 내에서 호출됩니다. 그러나 `Country` 에 대한 초기화 구문은 <doc:Initialization#2단계-초기화-Two-Phase-Initialization> 에서 설명 했듯이 새로운 `Country` 인스턴스가 완벽히 초기화 될 때까지 `City` 초기화 구문에 `self` 를 전달할 수 없습니다.
 
-이 요구사항을 처리하려면 `Country` 의 `capitalCity` 프로퍼티를 타입 설명의 끝에 느낌표 \(`City!`\)로 표시되는 암시적 언래핑된 옵셔널 프로퍼티로 선언합니다. `capitalCity` 프로퍼티는 다른 옵셔널과 같이 `nil` 의 기본값을 가지지만 <doc:TheBasics#암시적-언래핑된-옵셔널-Implicitly-Unwrapped-Optionals> 에서 설명 했듯이 언래핑 할 필요없이 값에 접근할 수 있다는 의미입니다.
+이 요구사항을 처리하려면 `Country` 의 `capitalCity` 프로퍼티를 타입 설명의 끝에 느낌표 \(`City!`\)로 표시되는 암시적 언래핑된 옵셔널 프로퍼티로 선언합니다. `capitalCity` 프로퍼티는 다른 옵셔널과 같이 `nil` 의 기본값을 가지지만 <doc:TheBasics#암시적으로-언래핑된-옵셔널-Implicitly-Unwrapped-Optionals> 에서 설명 했듯이 언래핑 할 필요없이 값에 접근할 수 있다는 의미입니다.
 
 `capitalCity` 는 기본 `nil` 값을 가지므로 새로운 `Country` 인스턴스는 `Country` 인스턴스가 초기화 구문 내에서 `name` 프로퍼티를 설정하는 즉시 새로운 `Country`인스턴스는 완벽히 초기화 된 것으로 간주합니다. 이것은 `Country` 초기화 구문은 `name` 프로퍼티가 설정되는 즉시 암시적 `self` 프로퍼티를 참조하고 전달할 수 있다는 의미입니다. 따라서 `Country` 초기화 구문은 `capitalCity` 프로퍼티를 설정할 때 `City` 초기화 구문에 대한 하나의 파라미터로 `self` 를 전달할 수 있습니다.
 

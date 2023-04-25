@@ -342,7 +342,7 @@ default:
 C와 Objective-C의 `switch` 구문과 다르게 Swift의 `switch` 구문은 기본적으로 각 케이스의 바닥에서 다음 케이스로 바로 실행되지 않습니다. 명시적으로 `break` 구문 요청 없이 처음 일치하는 `switch` 케이스가 완료되자마자 `switch` 구문 전체가 끝납니다. 이러한 점은 `switch` 구문을 더 안전하고 C의 `switch` 구문보다 사용하기 쉽게 해주고 실수로 `switch` 케이스가 하나 이상 실행되는 것을 피할 수 있습니다.
 
 > Note  
-> Swift에서 `break` 는 요구되지 않지만 특정 케이스를 무시하거나 일치하는 케이스의 실행이 완료되기 전에 빠져나와야 할 경우 `break` 구문을 사용할 수 있습니다. 자세한 내용은 <doc:ControlFlow#Switch-구문에서-Break-Break-in-a-Switch-Statement> 를 참고 바랍니다.
+> Swift에서 `break` 는 요구되지 않지만 특정 케이스를 무시하거나 일치하는 케이스의 실행이 완료되기 전에 빠져나와야 할 경우 `break` 구문을 사용할 수 있습니다. 자세한 내용은 <doc:ControlFlow#Switch-구문에서-중단-Break-in-a-Switch-Statement> 를 참고 바랍니다.
 
 각 케이스의 본문은 _반드시_ 적어도 하나의 실행가능한 구문이 포함되어야 합니다. 아래의 코드는 첫번째 케이스가 비어 있으므로 유효하지 않습니다:
 

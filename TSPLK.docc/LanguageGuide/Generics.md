@@ -450,7 +450,7 @@ protocol SuffixableContainer: Container {
 }
 ```
 
-이 프로토콜에서 `Suffix` 는 위의 `Container` 예제에서 `Item` 타입과 같은 연관된 타입입니다. `Suffix` 는 2개의 제약을 가지고 있으며 먼저 현재 정의되어 있는 프로토콜 인 `SuffixableContainer` 프로토콜을 준수해야 하며 `Item` 타입은 컨테이너의 `Item` 타입과 동일해야 합니다. `Item` 에 대한 제약은 아래의 <doc:Generics#제너릭-Where-절을-가진-연관된-타입-Associated-Types-with-a-Generic-Where-Clause> 에서 설명할 제너릭 `where` 절입니다.
+이 프로토콜에서 `Suffix` 는 위의 `Container` 예제에서 `Item` 타입과 같은 연관된 타입입니다. `Suffix` 는 2개의 제약을 가지고 있으며 먼저 현재 정의되어 있는 프로토콜 인 `SuffixableContainer` 프로토콜을 준수해야 하며 `Item` 타입은 컨테이너의 `Item` 타입과 동일해야 합니다. `Item` 에 대한 제약은 아래의 <doc:Generics#제너릭-Where-절이-있는-연관된-타입-Associated-Types-with-a-Generic-Where-Clause> 에서 설명할 제너릭 `where` 절입니다.
 
 다음은 `SuffixableContainer` 프로토콜의 준수성을 추가하는 위의 <doc:Generics#제너릭-타입-Generic-Types> 에서 `Stack` 타입의 확장입니다:
 

@@ -14,7 +14,7 @@ _프로퍼티 \(Properties\)_ 는 값을 특정 클래스, 구조체, 또는 열
 
 가장 간단한 형식으로 저장된 프로퍼티는 특정 클래스 또는 구조체의 인스턴스의 부분으로 저장된 상수 또는 변수 입니다. 저장된 프로퍼티는 _저장된 프로퍼티 변수 \(variable stored properties\)_ \(`var` 키워드 사용\) 또는 _저장된 프로퍼티 상수 \(constant stored properties\)_ \(`let` 키워드 사용\)로 쓸 수 있습니다.
 
-<doc:Initialization#기본-프로퍼티-값-Default-Property-Values> 에 설명한 대로 정의의 부분으로 저장된 프로퍼티에 대한 기본값을 제공할 수 있습니다. 초기화 중에 저장된 프로퍼티에 초기값을 설정하고 수정할 수도 있습니다. <doc:Initialization#초기화-동안-프로퍼티-상수-할당-Assigning-Constant-Properties_During-Initialization> 에서 설명한 대로 상수 저장 프로퍼티에도 마찬가지 입니다.
+<doc:Initialization#기본-프로퍼티-값-Default-Property-Values> 에 설명한 대로 정의의 부분으로 저장된 프로퍼티에 대한 기본값을 제공할 수 있습니다. 초기화 중에 저장된 프로퍼티에 초기값을 설정하고 수정할 수도 있습니다. <doc:Initialization#초기화-동안-프로퍼티-상수-할당-Assigning-Constant-Properties-During-Initialization> 에서 설명한 대로 상수 저장 프로퍼티에도 마찬가지 입니다.
 
 아래 예제는 `FixedLengthRange` 라는 구조체를 정의합니다. 이 구조체는 범위 길이가 생성된 후에 변경할 수 없는 정수 범위를 나타냅니다:
 
