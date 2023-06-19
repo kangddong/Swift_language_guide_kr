@@ -467,6 +467,10 @@
 >
 > *opaque-type* → **`some`** *type*
 
+> Grammar of a boxed protocol type
+>
+> *boxed-protocol-type* --> **``any``** *type*
+
 > Grammar of a metatype type:
 >
 > *metatype-type* → *type* **`.`** **`Type`** | *type* **`.`** **`Protocol`**
@@ -551,6 +555,8 @@
 >
 > *primary-expression* → *superclass-expression*
 >
+> *primary-expression* → *conditional-expression*
+>
 > *primary-expression* → *closure-expression*
 >
 > *primary-expression* → *parenthesized-expression*
@@ -560,6 +566,8 @@
 > *primary-expression* → *implicit-member-expression*
 >
 > *primary-expression* → *wildcard-expression*
+>
+> *primary-expression* → *macro-expansion-expression*
 >
 > *primary-expression* → *key-path-expression*
 >
@@ -572,10 +580,6 @@
 > *literal-expression* → *literal*
 >
 > *literal-expression* → *array-literal* | *dictionary-literal* | *playground-literal*
->
-> *literal-expression* → **`#file`** | **`#fileID`** | **`#filePath`**
->
-> *literal-expression* → **`#line`** | **`#column`** | **`#function`** | **`#dsohandle`**
 >
 >
 >
@@ -623,6 +627,28 @@
 > *superclass-subscript-expression* → **`super`** **`[`** *function-call-argument-list* **`]`**
 >
 > *superclass-initializer-expression* → **`super`** **`.`** **`init`**
+
+> Grammar of a conditional expression:
+>
+> *conditional-expression* → *if-expression* | *switch-expression*
+>
+>
+>
+> *if-expression* → **`if`** *condition-list* **`{`** *statement* **`}`** *if-expression-tail*
+>
+> *if-expression-tail* → **`else`** *if-expression*
+>
+> *if-expression-tail* → **`else`** **`{`** *statement* **`}`** *if-expression-tail*
+>
+>
+>
+> *switch-expression* → **`switch`** *expression* **`{`** *switch-expression-cases* **`}`**
+>
+> *switch-expression-cases* → *switch-expression-case* *switch-expression-cases*_?_
+>
+> *switch-expression-case* → *case-label* *statement*
+>
+> *switch-expression-case* → *default-label* *statement*
 
 > Grammar of a closure expression:
 >
@@ -681,6 +707,10 @@
 > Grammar of a wildcard expression:
 >
 > *wildcard-expression* → **`_`**
+
+> Grammar of a macro-expansion expression:
+>
+> *macro-expansion-expression* → **`#`** *identifier* *generic-argument-clause*_?_ *function-call-argument-clause*_?_ *trailing-closures*_?_
 
 > Grammar of a key-path expression:
 >
@@ -1047,16 +1077,6 @@
 > *line-number* → A decimal integer greater than zero
 >
 > *file-path* → *static-string-literal*
-
-> Grammar of a compile-time diagnostic statement:
->
-> *diagnostic-statement* → **`#error`** **`(`** *diagnostic-message* **`)`**
->
-> *diagnostic-statement* → **`#warning`** **`(`** *diagnostic-message* **`)`**
->
->
->
-> *diagnostic-message* → *static-string-literal*
 
 > Grammar of an availability condition:
 >
@@ -1433,6 +1453,18 @@
 > *subscript-head* → *attributes*_?_ *declaration-modifiers*_?_ **`subscript`** *generic-parameter-clause*_?_ *parameter-clause*
 >
 > *subscript-result* → **`->`** *attributes*_?_ *type*
+
+> Grammar of a macro declaration:
+>
+> *macro-declaration* → *macro-head* *identifier* *generic-parameter-clause*_?_ *macro-signature* *macro-definition*_?_ *generic-where-clause*
+>
+> *macro-head* → *attributes*_?_ *declaration-modifiers*_?_ **`macro`** 
+>
+> *macro-signature* → *parameter-clause* *macro-function-signature-result*_?_
+>
+> *macro-function-signature-result* → **`->`** *type*
+>
+> *macro-definition* → **`=`** *expression*
 
 > Grammar of an operator declaration:
 >

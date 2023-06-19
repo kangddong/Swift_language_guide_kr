@@ -17,6 +17,7 @@
 
 <!-- ### 업데이트
 
+- <doc:RevisionHistory#2023-06-19>
 - <doc:RevisionHistory#2023-04-04>
 - <doc:RevisionHistory#2022-09-13>
 - <doc:RevisionHistory#2022-03-17>
@@ -158,6 +159,7 @@
 - <doc:OptionalChaining>
 - <doc:ErrorHandling>
 - <doc:Concurrency>
+- <doc:Macros>
 - <doc:TypeCasting>
 - <doc:NestedTypes>
 - <doc:Extensions>

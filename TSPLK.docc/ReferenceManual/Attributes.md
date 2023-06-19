@@ -17,6 +17,46 @@ Swift 에는 두 종류의 속성 (attributes) 이 있습니다 — 선언에 �
 
 선언 속성 (declaration attribute) 은 선언에만 적용할 수 있습니다.
 
+### attached
+
+매크로 선언에 `attached` 속성을 적용합니다. 이 속성의 인수는 매크로의 역할을 나타냅니다. 여러 역할이 있는 매크로인 경우 각 역할에 한번씩 여러번 `attached` 매크로를 적용합니다.
+
+이 속성에 첫번째 인수는 매크로 역할을 나타냅니다:
+
+Peer 매크로:
+이 속성에 첫번째 인수로 `peer` 를 작성합니다. 이 매크로 구현 타입은 `PeerMacro` 프로토콜을 준수합니다. 이러한 매크로는 매크로가 첨부된 선언과 동일한 범위에 새로운 선언을 생성합니다. 예를 들어, 구조체의 메서드에 peer 매크로를 적용하면 해당 구조체에 추가로 메서드와 프로퍼티를 정의할 수 있습니다.
+
+Member 매크로:
+이 속성에 첫번째 인수로 `member` 를 작성합니다. 이 매크로 구현 타입은 `MemberMacro` 프로토콜을 준수합니다. 이러한 매크로는 매크로가 첨부된 타입 또는 확장의 멤버인 새로운 선언을 생성합니다. 예를 들어, 구조체 선언에 member 매크로를 적용하면 해당 구조체에 추가로 메서드와 프로퍼티를 정의할 수 있습니다.
+
+Member 속성:
+이 속성에 첫번째 인수로 `memberAttribute` 를 작성합니다. 이 매크로 구현 타입은 `MemberAttributeMacro` 프로토콜을 준수합니다. 이러한 매크로는 매크로가 첨부된 타입 또는 확장의 멤버에 속성을 추가합니다.
+
+Accessor 매크로:
+이 속성에 첫번째 인수로 `accessor` 를 작성합니다. 이 매크로 구현 타입은 `AccessorMacro` 프로토콜을 준수합니다. 이 매크로는 저장된 프로퍼티에 접근자를 추가하여 계산된 프로퍼티로 변경합니다.
+
+Conformance 매크로:
+이 속성에 첫번째 인수로 `conformance` 를 작성합니다. 이 매크로 구현 타입은 `ConformanceMacro` 프로토콜을 준수합니다. 이 매크로는 매크로가 첨부된 타입에 프로토콜 준수성을 추가합니다.
+
+peer, member, 그리고 accessor 매크로 역할은 매크로가 생성하는 기호의 이름을 나열하는 `named:` 인수를 요구합니다. 매크로 선언이 `named:` 인수를 포함할 때, 매크로 구현은 해당 리스트에 일치하는 이름의 기호만 생성해야 합니다. 다시 말해, 매크로는 나열된 이름의 기호를 생성할 필요는 없습니다. 해당 인수의 값은 다음 중 하나 이상의 값입니다:
+
+- `named(<#name#>)`
+  여기서 _이름 (name)_ 은 미리 알려진 이름에 대한 고정 기호입니다.
+
+- `overloaded`
+  기존 기호와 동일한 이름인 경우.
+
+- `prefixed(<#prefix#>)`
+  여기서 _접두사 (prefix)_ 는 고정된 문자열로 시작하는 이름의 경우 기호 이름 앞에 추가됩니다.
+
+- `suffixed(<#suffix#>`
+  여기서 _접미사 (suffix)_ 는 고정된 문자열로 끝나는 이름의 경우 기호 이름 뒤에 추가됩니다.
+
+- `arbitrary`
+  매크로 확장까지 이름이 결정될 수 없는 경우.
+
+특수한 경우로 프로퍼티 래퍼 (property wrapper) 와 유사하게 동작하는 매크로에 대해 `prefixed($)` 를 작성할 수 있습니다.
+
 ### available
 
 이 속성을 적용하여 특정 Swift 언어 버전 또는 특정 플랫폼과 운영체제 버전과 관련된 선언의 라이프 사이클을 나타냅니다.
@@ -247,6 +287,10 @@ let wrapper = PassthroughWrapper(value: point)
 print(wrapper.x)
 ```
 
+### freestanding
+
+독립 매크로 (freestanding macro) 를 선언하기 위해 `freestanding` 속성을 적용합니다.
+
 ### frozen
 
 타입에 변경사항을 제한하기 위해 구조체 또는 열거형 선언에 이 속성을 적용합니다. 이 속성은 라이브러리 진화 모드 (library evolution mode) 로 컴파일 될 때만 허용됩니다. 이후 버전의 라이브러리는 열거형의 케이스 또는 구조체의 저장된 인스턴스 프로퍼티를 추가, 제거, 또는 재정렬로 선언을 변경할 수 없습니다. 이러한 변경은 고정되지 않은 타입 (nonfrozen types) 에서 허용되지만 고정된 타입 (frozen types) 에 대해 ABI 호환성을 깨뜨립니다.
@@ -440,14 +484,24 @@ s.$x.wrapper  // WrapperWithProjection value
 
 #### 결과-빌딩 메서드 (Result-Building Methods)
 
-결과 빌더는 아래 설명한대로 정적 메서드를 구현합니다. 결과 빌더의 모든 기능은 정적 메서드를 통해 노출되므로 해당 타입의 인스턴스를 초기화 하지 않습니다. `buildBlock(_:)` 메서드는 필수입니다. DSL 에서 추가 기능을 활성화 하는 다른 메서드는 옵셔널 입니다. 결과 빌더 타입의 선언은 프로토콜 준수를 포함할 필요가 없습니다.
+결과 빌더는 아래 설명한대로 정적 메서드를 구현합니다. 결과 빌더의 모든 기능은 정적 메서드를 통해 노출되므로 해당 타입의 인스턴스를 초기화 하지 않습니다. 결과 빌더는 `buildBlock(_:)` 메서드를 구현하거나 `buildPartialBlock(first:)` 와 `buildPartialBlock(accumulated:next:)` 메서드를 구현해야 합니다. DSL 에서 추가 기능을 활성화 하는 다른 메서드는 옵셔널 입니다. 결과 빌더 타입의 선언은 프로토콜 준수를 포함할 필요가 없습니다.
 
 정적 메서드의 설명은 기호로 세가지 타입을 사용합니다. `Expression` 타입은 결과 빌더의 입력의 타입에 대한 기호이고 `Component` 는 부분 결과의 타입에 대한 기호이며 `FinalResult` 는 결과 빌더가 생성하는 결과의 타입에 대한 기호입니다. 이러한 타입을 결과 빌더가 사용하는 실제 타입으로 바꿉니다. 결과-빌딩 메서드가 `Expression` 또는 `FinalResult` 에 대한 타입을 지정하지 않으면 `Component` 와 기본적으로 동일합니다.
 
 결과-빌딩 메서드는 다음과 같습니다:
 
 `static func buildBlock(_ components: Component...) -> Component` \
-부분 결과의 배열을 단일 부분 결과로 결합합니다. 결과 빌더는 이 메서드를 구현해야 합니다.
+부분 결과의 배열을 단일 부분 결과로 결합합니다.
+
+`static func buildPartialBlock(first: Component) -> Component` \
+첫번째 컴포넌트로 부터 부분 결과 컴포넌트를 빌드합니다. 한번에 하나의 컴포넌트 빌딩 블럭을 지원하기위해 이 메서드와 `buildPartialBlock(accumulated:next:)` 메서드를 구현합니다. `buildBlock(_:)` 과 비교하여 이 접근은 인수의 다른 갯수를 처리하는 일반적인 오버로드의 필요성을 줄여줍니다.
+
+`static func buildPartialBlock(accumulated: Component, next: Component) -> Component` \
+누적된 컴포넌트와 새로운 컴포넌트를 결합하여 부분 결과 컴포넌트를 빌드합니다. 한번에 하나의 컴포넌트 빌딩 블럭을 지원하기위해 이 메서드와 `buildPartialBlock(first:)` 메서드를 구현합니다. `buildBlock(_:)` 과 비교하여 이 접근은 인수의 다른 갯수를 처리하는 일반적인 오버로드의 필요성을 줄여줍니다.
+
+결과 빌더는 위에 나열된 블럭-빌딩 메서드 세가지 모두 구현할 수 있습니다. 이 경우에 가용성에 따라 호출되는 메서드가 결정됩니다. 기본적으로, Swift 는 `buildPartialBlock(first:)` 와 `buildPartialBlock(second:)` 메서드를 호출합니다. Swift 가 `buildBlock(_:)` 을 호출하도록 하려면 `buildPartialBlock(first:)` 와 `buildPartialBlock(second:)` 에 작성하기 전에 동봉 선언 (enclosing declaration) 을 사용가능으로 표시합니다.
+
+추가적인 결과-빌딩 메서드는 다음과 같습니다:  
 
 `static func buildOptional(_ component: Component?) -> Component` \
 `nil` 이 가능한 부분 결과로 부터 부분 결과를 빌드합니다. `else` 절을 포함하지 않은 `if` 구문을 지원하려면 이 메서드를 구현해야 합니다.

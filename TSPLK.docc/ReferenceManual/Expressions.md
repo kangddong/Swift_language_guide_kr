@@ -250,6 +250,8 @@ _기본 표현식 (Primary expressions)_ 은 표현식의 가장 기본입니다
 >
 > *primary-expression* → *superclass-expression*
 >
+> *primary-expression* → *conditional-expression*
+>
 > *primary-expression* → *closure-expression*
 >
 > *primary-expression* → *parenthesized-expression*
@@ -260,6 +262,8 @@ _기본 표현식 (Primary expressions)_ 은 표현식의 가장 기본입니다
 >
 > *primary-expression* → *wildcard-expression*
 >
+> *primary-expression* → *macro-expansion-expression*
+>
 > *primary-expression* → *key-path-expression*
 >
 > *primary-expression* → *selector-expression*
@@ -268,37 +272,10 @@ _기본 표현식 (Primary expressions)_ 은 표현식의 가장 기본입니다
 
 ### 리터럴 표현식 (Literal Expression)
 
-_리터럴 표현식 (literal expression)_ 은 일반 리터럴 (문자열 또는 숫자 등), 배열 또는 딕셔너리 리터럴, 플레이그라운드 리터럴 또는 다음 특수 리터럴 중 하나로 구성됩니다:
+_리터럴 표현식 (literal expression)_ 은 일반 리터럴 (문자열 또는 숫자 등), 배열 또는 딕셔너리 리터럴, 플레이그라운드 리터럴로 구성됩니다:
 
-|    Literal   |        Type        |                             Value                            |
-| :----------: | :----------------: | :----------------------------------------------------------: |
-|    `#file`   |      `String`      |                      파일이 표시되는 파일의 경로입니다.                     |
-|   `#fileID`  |      `String`      |                      파일과 모듈을 나타내는 이름입니다.                     |
-|  `#filePath` |      `String`      |                      파일이 표시되는 파일의 경로입니다.                     |
-|    `#line`   |        `Int`       |                       숫자로 나타내는 라인수 입니다.                      |
-|   `#column`  |        `Int`       |                      숫자로 시작하는 열 번호 입니다.                      |
-|  `#function` |      `String`      |                          선언의 이름입니다.                          |
-| `#dsohandle` | `UnsafeRawPointer` | 표시되는 위치에서 사용되는 동적 공유 객체 (dynamic shared object) (DSO) 처리입니다. |
-
-`#file` 의 문자열 값은 이전 `#filePath` 동작에서 새로운 `#fileID` 동작으로 변경 가능하도록 언어 버전에 따라 다릅니다. 현재 `#file` 은 `#filePath` 와 동일한 값을 가집니다. Swift 의 향후 버전에서는 `#file` 은 `#fileID` 와 동일한 값을 가질 것입니다. 향후 동작을 채택하려면 `#file` 을 `#fileID` 또는 `#filePath` 로 적절하게 바꾸십시오.
-
-`#fileID` 표현식의 문자열 값은 _모듈 (module)/파일 (file)_ 의 형식을 가지며 _파일 (file)_ 은 표현식이 나타내는 파일의 이름이고 _모듈 (module)_ 은 이 파일이 속한 모듈의 이름을 나타냅니다. `#filePath` 표현식의 문자열 값은 표현식이 나타내는 파일의 전체 파일시스템 경로입니다. 이 두 값은 <doc:Statements#라인-제어-구문-Line-Control-Statement> 에서 설명한대로 `#sourceLocation` 에 의해 변경될 수 있습니다. `#fileID` 는 `#filePath` 와 달리 소스 파일의 전체 경로를 포함하지 않으므로 개인정보보호를 강화하고 컴파일 된 바이너리의 크기를 더 줄입니다. 테스트, 빌드 스크립트, 또는 다른 프로그램의 일부가 되는 코드에 `#filePath` 사용은 피해야 합니다.
-
-> Note\
-> `#fileID` 표현식을 분석하려면 모듈 이름을 첫 번째 슬래시 (`/`) 앞의 텍스트로 읽고 파일 이름을 마지막 슬래시 이후 문자열로 읽습니다. 문자열은 `MyModule/some/disambiguation/MyFile.swift` 와 같이 여러개의 슬래시가 포함될 수 있습니다.
-
-함수 내에서 `#function` 의 값은 해당 함수의 이름이고 메서드 내에서 해당 메서드의 이름이고 프로퍼티 getter 또는 setter 내에서 해당 프로퍼티의 이름이고 `init` 또는 `subscript` 와 같은 툭수 멤버 내에서 해당 키워드의 이름이고 파일의 최상위 수준에서는 현재 모듈의 이름입니다.
-
-함수 또는 메서드 파라미터의 기본값으로 사용될 때 특수 리터럴의 값은 기본값 표현식은 호출될 때 결정됩니다.
-
-```swift
-func logFunctionName(string: String = #function) {
-    print(string)
-}
-func myFunction() {
-    logFunctionName() // Prints "myFunction()".
-}
-```
+> Note:
+> Swift 5.9 이전에는 다음의 특수 리터럴이 인식되었고, 이제는 Swift 표준 라이브러리에 매크로로 구현되어 있습니다: `#column`, `#dsohandle`, `#fileID`, `#filePath`, `#file`, `#function`, 그리고 `#line`.
 
 _배열 리터럴 (array literal)_ 은 순서가 있는 값의 콜렉션입니다. 형식은 아래와 같습니다:
 
@@ -333,10 +310,6 @@ Xcode 에서 플레이그라운드 리터럴 사용에 대한 정보는 Xcode �
 > *literal-expression* → *literal*
 >
 > *literal-expression* → *array-literal* | *dictionary-literal* | *playground-literal*
->
-> *literal-expression* → **`#file`** | **`#fileID`** | **`#filePath`**
->
-> *literal-expression* → **`#line`** | **`#column`** | **`#function`** | **`#dsohandle`**
 >
 >
 >
@@ -435,6 +408,77 @@ super.init(<#initializer arguments#>)
 > *superclass-subscript-expression* → **`super`** **`[`** *function-call-argument-list* **`]`**
 >
 > *superclass-initializer-expression* → **`super`** **`.`** **`init`**
+
+### 조건 표현식 (Conditional Expression)
+
+_조건 표현식 (conditional expression)_ 은 조건의 값을 기반으로 주어진 몇몇 값 중 하나로 평가합니다. 다음의 형식을 가집니다:
+
+```swift
+if <#condition 1#> {
+   <#expression used if condition 1 is true#>
+} else if <#condition 2#> {
+   <#expression used if condition 2 is true#>
+} else {
+   <#expression used if both conditions are false#>
+}
+
+
+switch <#expression#> {
+case <#pattern 1#>:
+    <#expression 1#>
+case <#pattern 2#> where <#condition#>:
+    <#expression 2#>
+default:
+    <#expression 3#>
+}
+```
+
+조건 표현식은 아래에서 설명하는 다른점을 제외하고는 `if` 구문 또는 `switch` 구문과 같은 동작과 구문을 가집니다.
+
+조건 표현식은 다음 컨텍스트에서만 나타납니다:
+
+  - 변수에 할당된 값.
+  - 변수 또는 상수 선언에서 초기값.
+  - `throw` 표현식으로 에러를 발생.
+  - 함수, 클로저, 또는 프로퍼티 getter 에 의해 반환된 값.
+  - 조건 표현식의 구문안에서의 값.
+
+조건 표현식의 구문은 조건에 상관없이 값을 생성하므로 완벽합니다. 이것은 각 `if` 분기는 적절한 `else` 분기가 필요합니다. 
+
+각 분기는 분기의 조건이 참일 때 조건 표현식의 값으로 사용되는 단일 표현식, `throw` 구문, 또는 반환하지 않는 함수 호출을 포함합니다.
+
+각 분기는 같은 타입의 값을 생성해야 합니다. 각 분기의 타입 검사는 독립적이기 때문에 분기가 다른 종류의 리터럴을 포함하거나 분기의 값이 `nil` 과 같을 때 값의 타입을 명시해야 합니다. 이 정보를 제공해야 할 때, 할당되는 결과 변수에 타입 명시를 추가하거나 분기의 값에 `as` 캐스트를 추가합니다.
+
+```swift
+let number: Double = if someCondition { 10 } else { 12.34 }
+let number = if someCondition { 10 as Double } else { 12.34 }
+```
+
+결과 빌더 (result builder) 내에서 조건 표현식은 변수 또는 상수의 초기값으로만 나타날 수 있습니다. 변수 또는 상수 선언 외부의 결과 빌더에서 `if` 또는 `switch` 를 작성하면 해당 코드는 분기 구문으로 이해하고 결과 빌더의 메서드 중 하나가 해당 코드를 변환한다는 의미입니다.
+
+조건 표현식의 분기 중 하나가 에러를 발생하더라도 `try` 표현식에 조건 표현식을 작성하면 안됩니다. 
+
+> Grammar of a conditional expression:
+>
+> *conditional-expression* → *if-expression* | *switch-expression*
+>
+>
+>
+> *if-expression* → **`if`** *condition-list* **`{`** *statement* **`}`** *if-expression-tail*
+>
+> *if-expression-tail* → **`else`** *if-expression*
+>
+> *if-expression-tail* → **`else`** **`{`** *statement* **`}`** *if-expression-tail*
+>
+>
+>
+> *switch-expression* → **`switch`** *expression* **`{`** *switch-expression-cases* **`}`**
+>
+> *switch-expression-cases* → *switch-expression-case* *switch-expression-cases*_?_
+>
+> *switch-expression-case* → *case-label* *statement*
+>
+> *switch-expression-case* → *default-label* *statement*
 
 ### 클로저 표현식 (Closure Expression)
 
@@ -671,6 +715,22 @@ _와일드카드 표현식 (wildcard expression)_ 은 할당 중에 값을 명�
 > Grammar of a wildcard expression:
 >
 > *wildcard-expression* → **`_`**
+
+### 매크로-확장 표현식 (Macro-Expansion Expression)
+
+_매크로-확장 표현식 (macro-expansion expression)_ 은 매크로 이름 다음에 소괄호로 매크로의 인수를 콤마로 구분되어 구성합니다. 매크로는 컴파일 때 확장됩니다. 매크로-확장 표현식은 다음의 형식을 가집니다:
+
+```swift
+<#macro name#>(<#macro argument 1#>, <#macro argument 2#>)
+```
+
+매크로-확장 표현식은 인수를 가지지 않으면 소괄호를 생략합니다.
+
+매크로 표현식은 Swift 표준 라이브러리에 [`file`](http://developer.apple.com/documentation/swift/documentation/swift/file) 과 [`line`](http://developer.apple.com/documentation/swift/documentation/swift/line) 매크로를 제외하고 파라미터의 기본값으로 나타날 수 없습니다. 함수 또는 메서드 파라미터의 기본값으로 사용될 때 이러한 매크로 값은 호출 사이트에서 기본값 표현식이 평가될 때 결정됩니다.
+
+> Grammar of a macro-expansion expression:
+>
+> *macro-expansion-expression* → **`#`** *identifier* *generic-argument-clause*_?_ *function-call-argument-clause*_?_ *trailing-closures*_?_
 
 ### 키-경로 표현식 (Key-Path Expression)
 
